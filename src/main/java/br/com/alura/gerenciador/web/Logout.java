@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,18 +15,17 @@ public class Logout extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
-		Cookie cookie = new Cookies(req.getCookies()).buscaUsuarioLogado();
+		
+		// TEMPO ENTRE DUAS REQUISIÇÕES (Ñ ENTRE A PRIMEIRA E ULTIMA!!!) (OPCIONAL), 10 MIN:
+		req.getSession().setMaxInactiveInterval(10 * 60);
+		
+		// PODEMOS REMOVER O ATRIBUTO PARA DESLOGAR:
+		req.getSession().removeAttribute("usuario.logado");
+		
+		// MATA A SESSÃO INTEIRA:
+		// req.getSession().invalidate();
 
 		PrintWriter writer = resp.getWriter();
-		if (cookie == null) {
-			writer.println("<html><body>Usuário não estava logado!</body></html>");
-			return;
-		}
-		
-		// CASO EXISTA O COOKIE, MATA PELO TEMPO E DEVOLVE PARA O CLIENTE:
-		cookie.setMaxAge(0);
-		resp.addCookie(cookie);
 		writer.println("<html><body>Deslogado com sucesso!</body></html>");
 
 	}

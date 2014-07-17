@@ -9,10 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
+
+import br.com.alura.gerenciador.Usuario;
 
 @WebFilter(urlPatterns = "/*")
 public class FiltroDeAuditoria implements Filter {
@@ -47,16 +47,11 @@ public class FiltroDeAuditoria implements Filter {
 	// RECUPERA O USUÁRIO NO COOKIE SE EXISTIR:
 	private String getUsuario(HttpServletRequest req) {
 		
-		// RECUPERA O COOKIE DE USUÁRIO LOGADO CASO EXISTA:
-		Cookie cookie = new Cookies(req.getCookies()).buscaUsuarioLogado();
+		// PEGA O USUÁRIO LOGADO GUARDADO NO ATRIBUTO DA SESSION:
+		Usuario usuario = (Usuario) req.getSession().getAttribute("usuario.logado");
 		
-		if(cookie == null) return "<deslogado>";
-		
-		// O COOKIE JÁ EXISTENTE RECEBE 10 MIN DE DURAÇÃO E ADD DEVOLTA AO RESPONSE:
-		cookie.setMaxAge(10 * 60);
-		this.resp.addCookie(cookie);
-		
-		return cookie.getValue();
+		if(usuario == null) return "<deslogado>";
+		return usuario.getEmail();
 	}
 
 	@Override
