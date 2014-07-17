@@ -11,11 +11,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 
 @WebFilter(urlPatterns = "/*")
 public class FiltroDeAuditoria implements Filter {
-
+	
+	private HttpServletResponse resp;
+	
 	@Override
 	public void destroy() {
 
@@ -30,28 +33,30 @@ public class FiltroDeAuditoria implements Filter {
 
 		// PEGA A URI:
 		String uri = req.getRequestURI();
-
+		
+		this.resp = (HttpServletResponse) response;
+		
 		System.out.println("Usuário " + this.getUsuario(req)
 				+ " acessando a URI: " + uri);
 
 		// CONTINUA COM A CADEIA EXECUÇÃO DE SERVLETS, FILTERS, ETC:
-		chain.doFilter(request, response);
+		chain.doFilter(request, this.resp);
 
 	}
 
-	// RECUPERA O COOKIE DE USUÁRIO LOGADO CASO EXISTA:
+	// RECUPERA O USUÁRIO NO COOKIE SE EXISTIR:
 	private String getUsuario(HttpServletRequest req) {
-		String usuario = "<deslogado>";
-		Cookie[] cookies = req.getCookies();
-		if (cookies == null)
-			return usuario;
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals("usuario.logado")) {
-				usuario = cookie.getValue();
-			}
-		}
-
-		return usuario;
+		
+		// RECUPERA O COOKIE DE USUÁRIO LOGADO CASO EXISTA:
+		Cookie cookie = new Cookies(req.getCookies()).buscaUsuarioLogado();
+		
+		if(cookie == null) return "<deslogado>";
+		
+		// O COOKIE JÁ EXISTENTE RECEBE 10 MIN DE DURAÇÃO E ADD DEVOLTA AO RESPONSE:
+		cookie.setMaxAge(10 * 60);
+		this.resp.addCookie(cookie);
+		
+		return cookie.getValue();
 	}
 
 	@Override

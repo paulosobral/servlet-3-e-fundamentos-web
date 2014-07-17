@@ -36,6 +36,10 @@ public class Login extends HttpServlet {
 			
 			// CRIA UM COOKIE E ENVIA PARA O CLIENTE:
 			Cookie cookie = new Cookie("usuario.logado",usuario.getEmail());
+			
+			// DEFINE O TEMPO DE DURAÇÃO DO COOKIE EM SEGUNDOS: 10 MINUTOS. 
+			cookie.setMaxAge(10 * 60);
+			
 			resp.addCookie(cookie);
 			
 			writer.println("<html><body>Usuário logado: "+usuario.getEmail()+"</body></html>");
