@@ -3,6 +3,7 @@ package br.com.alura.gerenciador.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,18 +17,18 @@ public class Logout extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		// TEMPO ENTRE DUAS REQUISIÇÕES (Ñ ENTRE A PRIMEIRA E ULTIMA!!!) (OPCIONAL), 10 MIN:
-		req.getSession().setMaxInactiveInterval(10 * 60);
-		
 		// PODEMOS REMOVER O ATRIBUTO PARA DESLOGAR:
 		req.getSession().removeAttribute("usuario.logado");
 		
-		// MATA A SESSÃO INTEIRA:
-		// req.getSession().invalidate();
-
-		PrintWriter writer = resp.getWriter();
-		writer.println("<html><body>Deslogado com sucesso!</body></html>");
-
+		// REDIRECIONAO CLIENTE PARA A PÁGINA LOGOUT.HTML (CÓDIGO 302):
+		// NÃO QUEREMOS QUE O USUÁRIO VEJA ESTA PÁGINA, ENTÃO POR SEGURANÇA COLOCAMOS
+		// NO DIRETÓRIO PROTEGIDO WEB-INF. PORÉM POR ESTAR PROTEGIDO, O ARQUIVO NÃO É ENCONTRADO:
+		// resp.sendRedirect("WEB-INF/paginas/logout.html");
+		
+		// TEMOS QUE UTILIZAR O SERVIDOR PARA DESPACHAR, PEGUE ESTA REQUISIÇÃO E REDIRECIONE!!!
+		// ASSIM O CLIENTE NÃO FICA SABENDO DA URI, SE ELE DER O REFRESH NO NAVEGADOR ELE EXECUTA A PRIMEIRA URL:
+		RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/paginas/logout.html");
+		dispatcher.forward(req, resp);
 	}
 
 }
