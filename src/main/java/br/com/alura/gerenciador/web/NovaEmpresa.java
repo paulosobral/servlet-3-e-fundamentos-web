@@ -1,8 +1,8 @@
 package br.com.alura.gerenciador.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,8 +24,12 @@ public class NovaEmpresa extends HttpServlet {
 		
 		new EmpresaDAO().adiciona(empresa);
 		
-		PrintWriter writer = resp.getWriter();
-		writer.println("<html><body>Empresa adicionada com sucesso: " + nome + "</body></html>");
+		// PARÂMETRO QUE VAI PARA A VIEW ATRAVÉS DA REQUISIÇÃO:
+		req.setAttribute("empresa", empresa);
+		
+		// REDIRECIONA PARA A VIEW ESTA REQUISIÇÃO:
+		RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/paginas/novaEmpresa.jsp");
+		dispatcher.forward(req, resp);
 
 	}
 
