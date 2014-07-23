@@ -18,7 +18,7 @@ public class Logout extends HttpServlet {
 			throws ServletException, IOException {
 		
 		// PODEMOS REMOVER O ATRIBUTO PARA DESLOGAR:
-		req.getSession().removeAttribute("usuario.logado");
+		req.getSession().removeAttribute("usuarioLogado");
 		
 		// REDIRECIONAO CLIENTE PARA A PÁGINA LOGOUT.HTML (CÓDIGO 302):
 		// NÃO QUEREMOS QUE O USUÁRIO VEJA ESTA PÁGINA, ENTÃO POR SEGURANÇA COLOCAMOS
