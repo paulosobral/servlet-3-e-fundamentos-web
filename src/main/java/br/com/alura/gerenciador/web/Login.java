@@ -1,11 +1,5 @@
 package br.com.alura.gerenciador.web;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -13,23 +7,21 @@ import javax.servlet.http.HttpSession;
 import br.com.alura.gerenciador.Usuario;
 import br.com.alura.gerenciador.dao.UsuarioDAO;
 
-@WebServlet(urlPatterns="/login")
-public class Login extends HttpServlet {
-	
+
+public class Login implements Tarefa {
+
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public String executa(HttpServletRequest req, HttpServletResponse response) {
 		
 		String email = req.getParameter("email");
 		String senha = req.getParameter("senha");
 		
 		Usuario usuario = new UsuarioDAO().buscaPorEmailESenha(email, senha);
-		PrintWriter writer = resp.getWriter();
 		
 		// VERIFICA SE USUÁRIO EXISTE:
 		if(usuario == null)
 		{
-			writer.println("<html><body>Usuário inválido!</body></html>");
+			return "/WEB-INF/paginas/login-invalido.html";
 		}
 		else
 		{
@@ -39,8 +31,10 @@ public class Login extends HttpServlet {
 			// COLOCA ATRIBUTO NA SESSÃO:
 			session.setAttribute("usuarioLogado", usuario);
 			
-			writer.println("<html><body>Usuário logado: "+usuario.getEmail()+"</body></html>");
+			return "/WEB-INF/paginas/usuario-logado.jsp";
 		}
+		
 	}
+	
 	
 }

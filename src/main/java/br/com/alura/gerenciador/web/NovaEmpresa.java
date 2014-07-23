@@ -1,24 +1,16 @@
 package br.com.alura.gerenciador.web;
 
-import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import br.com.alura.gerenciador.Empresa;
 import br.com.alura.gerenciador.dao.EmpresaDAO;
 
-@WebServlet(urlPatterns = "/novaEmpresa")
-public class NovaEmpresa extends HttpServlet {
+public class NovaEmpresa implements Tarefa {
+
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-
+	public String executa(HttpServletRequest req, HttpServletResponse response) {
+		
 		String nome = req.getParameter("nome");
 		Empresa empresa = new Empresa(nome);
 		
@@ -28,9 +20,8 @@ public class NovaEmpresa extends HttpServlet {
 		req.setAttribute("empresa", empresa);
 		
 		// REDIRECIONA PARA A VIEW ESTA REQUISIÇÃO:
-		RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/paginas/novaEmpresa.jsp");
-		dispatcher.forward(req, resp);
-
+		return "WEB-INF/paginas/novaEmpresa.jsp";
+		
 	}
 
 }
